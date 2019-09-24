@@ -16,6 +16,13 @@ bool move_robot(ball_chaser::DriveToTarget::Request& req,
       ball_chaser::DriveToTarget::Response& res)
 {
   ROS_INFO("GoToPositionRequest received - j1:%1.2f, j2:%1.2f", (float)req.linear_x, (float)req.angular_z);
+  // Create a motor_command object of type geometry_msgs::Twist
+  geometry_msgs::Twist motor_command;
+  // Set wheel velocities, forward [0.5, 0.0]
+  motor_command.linear.x = (float)req.linear_x;
+  motor_command.angular.z =(float)req.angular_z;
+  // Publish angles to drive the robot
+  motor_command_publisher.publish(motor_command);
 }
 
 
@@ -32,23 +39,14 @@ int main(int argc, char** argv)
 
     // Inform ROS master that we will be publishing a message of type geometry_msgs::Twist on the robot actuation topic with a publishing queue size of 10
     motor_command_publisher = n.advertise<geometry_msgs::Twist>("/cmd_vel", 10);
+    ROS_INFO("Ready to send joint commands");
 
     // TODO: Define a drive /ball_chaser/command_robot service with a handle_drive_request callback function
     ros::ServiceServer service = n.advertiseService("/ball_chaser/command_robot", move_robot);
-    ROS_INFO("Ready to send joint commands");
-    // TODO: Delete the loop, move the code to the inside of the callback function and make the necessary changes to publish the requested velocities instead of constant values
-    while (ros::ok()) {
-        // Create a motor_command object of type geometry_msgs::Twist
-        geometry_msgs::Twist motor_command;
-        // Set wheel velocities, forward [0.5, 0.0]
-        motor_command.linear.x = 0.5;
-        motor_command.angular.z = 0.0;
-        // Publish angles to drive the robot
-        motor_command_publisher.publish(motor_command);
-    }
+    //client = n.serviceClient<ball_chaser::DriveToTarget>("/ball_chaser/command_robot");
 
     // TODO: Handle ROS communication events
-    //ros::spin();
+    ros::spin();
 
     return 0;
 }
