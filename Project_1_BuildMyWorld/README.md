@@ -5,17 +5,20 @@ The **myrobot** lab part of RoboND Gazebo Basics lesson. The purpose of this lab
 
 ### Directory Structure
 ```
-    .myrobot                           # myrobot lab main folder 
+    .Project_1_BuildMyWorld lab main folder 
     ├── images                         # Code output image                   
-    │   ├── output.png
+    │   ├── myworld.png
     ├── model                          # Model files of the two-wheeled robot
     │   ├── robot
+    │   │   ├── model.config
+    │   │   ├── model.sdf
+    |   ├── Building
     │   │   ├── model.config
     │   │   ├── model.sdf
     ├── script                         # Gazebo World plugin C++ script      
     │   ├── hello.cpp
     ├── world                          # Gazebo main World empty scene
-    │   ├── myworld
+    │   ├──  chris.world
     ├── CMakeLists.txt                 # Link libraries 
     └──                              
 ```
@@ -31,12 +34,12 @@ $ sudo apt-get upgrade -y
 #### Step 2 Clone the lab folder in /home/workspace/
 ```sh
 $ cd /home/workspace/
-$ git clone https://github.com/udacity/RoboND-myrobot myrobot
+$ git clone https://github.com/ChrisProgramming2018/robotic-projects.git
 ```
 
 #### Step 3 Compile the code
 ```sh
-$ cd /home/workspace/myrobot/
+$ cd /home/workspace/Project_1_BuildMyWorld/
 $ mkdir build
 $ cd build/
 $ cmake ../
@@ -45,16 +48,16 @@ $ make
 
 #### Step 4 Add the library path to the Gazebo plugin path  
 ```sh
-$ export GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:/home/workspace/myrobot/build
+$ export GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:/home/workspace/Project_1_BuildMyWorld /build
 ```
 
 #### Step 5 Run the Gazebo World file  
 ```sh
-$ cd /home/workspace/myrobot/world/
-$ gazebo myworld
+$ cd /home/workspace/Project_1_BuildMyWorld/world
+$ gazebo chris.world
 ```
 
 ### Output
 The hello world message and the two-wheeled robot inside a Gazebo World should both launch as follow: 
-![simulator](myworld.png)
+![simulator](images/myworld.png)
 
