@@ -1,0 +1,216 @@
+<?xml version="1.0"?>
+
+<robot name="my_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- CONSTANTS -->
+
+    <xacro:property name="pi" value="3.1415926535897931" />
+
+    <!-- Multiplicative factor applied to the radius of the caster balls
+         for them not to stop both wheels to be touching the ground at
+         the same time                                               -->
+    <xacro:property name="reduction_factor_caster_radius" value="0.998" />
+
+    <!-- PARAMETERS -->
+
+    <!-- Base parameters -->
+    <xacro:property name="base_radius" value="0.4" />
+    <!-- base height must be inside (wheel_radius, 2*wheel_radius) -->
+    <!-- note that the extremes of the interval are not included   -->
+    <xacro:property name="base_height" value="0.15" />
+    <xacro:property name="base_mass" value="15.0" />
+
+    <!-- Wheel parameters -->
+    <xacro:property name="wheel_radius" value="0.1" />
+    <xacro:property name="wheel_length" value="0.05" />
+    <xacro:property name="wheel_mass" value="5.0" />
+
+    <xacro:property name="z_offset_between_centers" value="${wheel_radius - base_height/2}" />
+
+    <!-- Camera parameters -->
+    <xacro:property name="camera_edge_length" value="0.05" />
+    <xacro:property name="camera_mass" value="0.1" />
+
+    <!-- Lidar parameters -->
+    <xacro:property name="lidar_edge_length" value="0.1" />
+    <xacro:property name="lidar_mass" value="1e-5" />
+
+    <!-- Sensor's base parameters -->
+    <xacro:property name="sensors_base_heigth" value="${1.5*camera_edge_length}" />
+    <xacro:property name="sensors_base_mass" value="5.0" />
+    <xacro:property name="sensors_base_offset_z" value="${base_height/2 + sensors_base_heigth/2}" />
+
+    <!-- INCLUDES -->
+
+    <xacro:include filename="$(find my_robot)/urdf/materials.xacro" />
+    <xacro:include filename="$(find my_robot)/urdf/macros.xacro" />
+    <xacro:include filename="$(find my_robot)/urdf/my_robot.gazebo" />
+
+    <!-- ROBOT DESCRIPTION-->
+
+    <link name="robot_footprint"></link>
+
+    <joint name="robot_footprint_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <parent link="robot_footprint"/>
+        <child link="base"/>
+    </joint>
+
+    <!-- Cylindrical base with two casters for stability along the y axis-->
+    <link name="base">
+        <!-- we want the wheel to touch the ground and the top of the base
+             to coincide with the top of the wheel                       -->
+        <pose>0 0 ${wheel_radius + z_offset_between_centers} 0 0 0</pose>
+
+        <xacro:cylinder_inertial
+            mass="${base_mass}" radius="${base_radius}" length="${base_height}"
+        />
+
+        <collision name="base_collision">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="${base_radius}" length="${base_height}" />
+            </geometry>
+        </collision>
+
+        <visual name="base_visual">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="${base_radius}" length="${base_height}" />
+            </geometry>
+        </visual>
+
+        <collision name="back_caster_collision">
+            <origin
+                xyz="${-3/4*base_radius} 0 ${-wheel_radius/2 - z_offset_between_centers}"
+                rpy="0 0 0"
+            />
+            <geometry>
+                <sphere radius="${reduction_factor_caster_radius*wheel_radius/2}"/>
+            </geometry>
+        </collision>
+
+        <visual name="back_caster_visual">
+            <origin
+                xyz="${-3/4*base_radius} 0 ${-wheel_radius/2 - z_offset_between_centers}"
+                rpy="0 0 0"
+            />
+            <geometry>
+                <sphere radius="${wheel_radius/2}"/>
+            </geometry>
+        </visual>
+
+        <collision name="front_caster_collision">
+            <origin
+                xyz="${3/4*base_radius} 0 ${-wheel_radius/2 - z_offset_between_centers}"
+                rpy="0 0 0"
+            />
+            <geometry>
+                <sphere radius="${reduction_factor_caster_radius*wheel_radius/2}"/>
+            </geometry>
+        </collision>
+
+        <visual name="front_caster_visual">
+            <origin
+                xyz="${3/4*base_radius} 0 ${-wheel_radius/2 - z_offset_between_centers}"
+                rpy="0 0 0"
+            />
+            <geometry>
+                <sphere radius="${wheel_radius/2}"/>
+            </geometry>
+        </visual>
+
+    </link>
+
+    <!-- Wheels on the x axis with their corresponding joints -->
+    <xacro:wheel side="left" reflect="-1" />
+    <xacro:wheel side="right" reflect="1" />
+
+    <!-- Rotating base for the sensors -->
+    <link name="sensors_base">
+        <xacro:cylinder_inertial
+            mass="${sensors_base_mass}" radius="${base_radius}" length="${sensors_base_heigth}"
+        />
+
+        <collision name="sensors_base_collision">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="${base_radius}" length="${sensors_base_heigth}" />
+            </geometry>
+        </collision>
+
+        <visual name="sensors_base_visual">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="${base_radius}" length="${sensors_base_heigth}" />
+            </geometry>
+        </visual>
+    </link>
+
+    <joint name="sensors_base_hinge" type="continuous">
+        <origin xyz="0 0 ${sensors_base_offset_z}" rpy="0 0 0" />
+        <child link="sensors_base" />
+        <parent link="base" />
+        <axis xyz="0 0 1" rpy="0 0 0" />
+        <limit effort="10000" velocity="1000" />
+        <dynamics damping="1.0" friction="1.0" />
+    </joint>
+
+    <!-- Camera -->
+    <link name="camera">
+        <xacro:cube_inertial mass="${camera_mass}" edge_length="${camera_edge_length}" />
+
+        <collision name="camera_collision">
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="${camera_edge_length} ${camera_edge_length} ${camera_edge_length}" />
+            </geometry>
+        </collision>
+
+        <visual name="camera_visual">
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="${camera_edge_length} ${camera_edge_length} ${camera_edge_length}" />
+            </geometry>
+        </visual>
+    </link>
+
+    <joint name="camera_joint" type="fixed">
+        <origin xyz="${base_radius} 0 0" rpy="0 0 0" />
+        <parent link="sensors_base" />
+        <child link="camera" />
+        <axis xyz="0 1 0" rpy="0 0 0" />
+    </joint>
+
+    <!-- Lidar -->
+    <link name="hokuyo">
+        <xacro:cube_inertial mass="${lidar_mass}" edge_length="${lidar_edge_length}" />
+
+        <collision name="lidar_collision">
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="${lidar_edge_length} ${lidar_edge_length} ${lidar_edge_length}" />
+            </geometry>
+        </collision>
+
+        <visual name="lidar_visual">
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://my_robot/meshes/hokuyo.dae" />
+            </geometry>
+        </visual>
+    </link>
+
+    <joint name="hokuyo_joint" type="fixed">
+        <origin
+            xyz="${base_radius - lidar_edge_length} 0 ${sensors_base_heigth/2}"
+            rpy="0 0 0"
+        />
+        <parent link="sensors_base" />
+        <child link="hokuyo" />
+        <axis xyz="0 1 0" rpy="0 0 0" />
+    </joint>
+
+    <!-- </ROBOT DESCRIPTION> -->
+
+</robot>
