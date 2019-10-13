@@ -40,6 +40,7 @@ class SubscribeAndPublish {
     // image size is 800 x  800 
     int count_pixels = 0;
     int position;
+    int stop = 30 * 1000;
     float offset = 0;
     // iterate of the Image 
     for (int i = 0; i < img.height; i++) {
@@ -54,7 +55,6 @@ class SubscribeAndPublish {
       }
     }
     // if in front stop robot
-    int stop = 100 * 1000;
     if (count_pixels >= stop) {
       ROS_INFO_STREAM("Infront of Ball stop Robot");
       drive_robot(0.0, 0);
