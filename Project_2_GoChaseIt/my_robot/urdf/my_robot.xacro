@@ -141,7 +141,7 @@
         </visual>
     </link>
 
-    <joint name="sensors_base_hinge" type="continuous">
+    <joint name="sensors_base_hinge" type="fixed">
         <origin xyz="0 0 ${sensors_base_offset_z}" rpy="0 0 0" />
         <child link="sensors_base" />
         <parent link="base" />
