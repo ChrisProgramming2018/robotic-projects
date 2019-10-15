@@ -47,7 +47,7 @@ class SubscribeAndPublish {
       for(int j = 0; j < img.step; j++) {
         position = i * img.step + j;
         // chck if pixel is white (255 value)
-        if (img.data[position] == white_pixel){ 
+        if (img.data[position] == white_pixel and img.data[position + 1] == white_pixel and img.data[position + 2] == white_pixel){ 
           offset += j - img.step / 2.0;   // offset = 0 middle of Image 
           found = true;
           count_pixels++;
