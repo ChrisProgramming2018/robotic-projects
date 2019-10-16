@@ -96,7 +96,7 @@ Directory Structure
 │   │   │   │   ├── chris.world
 │   │   │   ├── CMakeLists.txt                 # compiler instructions
 │   │   │   ├── package.xml                    # package info
-│   ├── Robot.png
+│   ├── robot_search.gif # end
 ```
 
 ## Future improvements
