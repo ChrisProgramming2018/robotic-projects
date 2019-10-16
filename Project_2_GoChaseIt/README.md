@@ -1,7 +1,9 @@
 [![Udacity - Robotics NanoDegree Program](https://s3-us-west-1.amazonaws.com/udacity-robotics/Extra+Images/RoboND_flag.png)](https://www.udacity.com/robotics)
-![Robot](./Robot.png)
-
 # Go Chase It! - Project 2 of the Udacity Robotics Software Engineer Nanodegree
+
+![Robot](./robot_search.gif)
+
+
 
 ## Description
 
@@ -94,7 +96,7 @@ Directory Structure
 │   │   │   │   ├── chris.world
 │   │   │   ├── CMakeLists.txt                 # compiler instructions
 │   │   │   ├── package.xml                    # package info
-│   ├── Robot.png
+│   ├── robot_search.gif # end
 ```
 
 ## Future improvements
