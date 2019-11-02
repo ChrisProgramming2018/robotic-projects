@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+
+  <!-- First palette -->
+  <!--https://www.rapidtables.com/web/color/RGB_Color.html-->
+    <xacro:macro name="material_red_base">
+        <visual>
+            <material>
+                <ambient>${252/255} ${4/255} ${37/255} 1</ambient>
+                <diffuse>${252/255} ${4/255} ${37/255} 1</diffuse>
+                <specular>0.1 0.1 0.1 0.1 1</specular>
+            </material>
+        </visual>
+    </xacro:macro>
+
+    <xacro:macro name="material_green_top">
+        <visual>
+            <material>
+                <ambient>${4/255} ${184/252} ${87/255} 1</ambient>
+                <diffuse>${4/255} ${184/252} ${87/255} 1</diffuse>
+                <specular>0.1 0.1 0.1 0.1 1</specular>
+            </material>
+        </visual>
+    </xacro:macro>
+
+        <xacro:macro name="material_yellow_wheel">
+        <visual>
+            <material>
+                <ambient>${255/255} ${255/255} ${0/255} 1</ambient>
+                <diffuse>${255/255} ${255/255} ${0/255} 1</diffuse>
+                <specular>0.1 0.1 0.1 0.1 1</specular>
+            </material>
+        </visual>
+    </xacro:macro>
+
+    <xacro:macro name="material_blue_camera">
+        <visual>
+            <material>
+                <ambient>${4/255} ${243/255} ${252/255} 1</ambient>
+                <diffuse>${4255} ${243/255} ${252/255} 1</diffuse>
+                <specular>0.1 0.1 0.1 0.1 1</specular>
+            </material>
+        </visual>
+    </xacro:macro>
+
+
+</robot>
