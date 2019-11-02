@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- Inertial of a cylinder -->
+    <xacro:macro name="cylinder_inertial" params="mass radius length">
+        <inertial>
+            <mass value="${mass}" />
+            <inertia
+                ixx="${1/12*mass*(3*radius*radius + length*length)}" ixy="0" ixz="0"
+                iyy="${1/12*mass*(3*radius*radius + length*length)}" iyz="0"
+                izz="${1/2*mass*radius*radius}"
+            />
+        </inertial>
+    </xacro:macro>
+
+    <!-- Inertial of a cube -->
+    <xacro:macro name="cube_inertial" params="mass edge_length">
+        <inertial>
+            <mass value="${mass}" />
+            <inertia
+                ixx="${1/6*mass*edge_length*edge_length}" ixy="0" ixz="0"
+                iyy="${1/6*mass*edge_length*edge_length}" iyz="0"
+                izz="${1/6*mass*edge_length*edge_length}"
+            />
+        </inertial>
+    </xacro:macro>
+
+    <!-- Add a wheel and its joint on the x axis, outer part of the base -->
+    <xacro:macro name="wheel" params="side reflect">
+        <link name="${side}_wheel">
+            <xacro:cylinder_inertial
+                mass="${wheel_mass}" radius="${wheel_radius}" length="${wheel_length}"
+            />
+
+            <collision name="${side}_wheel_collision">
+                <origin xyz="0 0 0" rpy="0 ${pi/2} ${pi/2}"/>
+                <geometry>
+                    <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+                </geometry>
+            </collision>
+
+            <visual name="${side}_wheel_visual">
+                <origin xyz="0 0 0" rpy="0 ${pi/2} ${pi/2}"/>
+                <geometry>
+                    <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+                </geometry>
+            </visual>
+        </link>
+
+        <joint type="continuous" name="${side}_wheel_hinge">
+            <origin
+                xyz="0 ${reflect*(base_radius + wheel_length/2)} ${-z_offset_between_centers}"
+                rpy="0 0 0"
+            />
+            <child link="${side}_wheel"/>
+            <parent link="base"/>
+            <axis xyz="0 1 0" rpy="0 0 0"/>
+            <limit effort="10000" velocity="1000"/>
+            <dynamics damping="1.0" friction="1.0"/>
+        </joint>
+    </xacro:macro>
+</robot>
