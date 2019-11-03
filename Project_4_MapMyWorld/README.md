@@ -42,13 +42,13 @@ There are two tasks involved in this project: robot model configuration and ``rt
 #### Robot Model Configuration
 The model is modifed with an RGB-D camera to input depth information to RTAB-Map.
 
-![robot_model](report/images/garage_explore.png)
+
 
 
 #### ``rtabmap`` for SLAM
 The robot uses the information from the odometer, the RGB-D camera and the laser rangefinder to perform SLAM in the designated environment through ``rtabmap``. The ``rtabmap`` library produces map database files that can be read by its own visualization tools. Details of the algorithm can be found in the writeup. Here is an image of the reconstructed kitchen dining environment:
 
-![world](map.jpg)
+![world](mapMyworld.png)
 
 ### Note on the RTAB Map Database Files
 The files were too large to host on Github 
