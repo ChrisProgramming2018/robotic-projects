@@ -1,0 +1,30 @@
+<launch>
+
+  <!-- Map server -->
+  <arg name="map_file" default="$(find robot)/world/my_map.yaml"/>
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+
+  <!-- AMCL -->
+  <arg name="custom_amcl_launch_file" default="$(find robot)/launch/includes/kinect_amcl.launch.xml"/>
+  <arg name="initial_pose_x" default="0.0"/> <!-- Use 17.0 for willow's map in simulation -->
+  <arg name="initial_pose_y" default="0.0"/> <!-- Use 17.0 for willow's map in simulation -->
+  <arg name="initial_pose_a" default="0.0"/>
+  <include file="$(arg custom_amcl_launch_file)">
+    <arg name="initial_pose_x" value="$(arg initial_pose_x)"/>
+    <arg name="initial_pose_y" value="$(arg initial_pose_y)"/>
+    <arg name="initial_pose_a" value="$(arg initial_pose_a)"/>
+  </include>
+
+  <!-- Move base -->
+  <include file="$(find robot)/launch/includes/move_base.launch.xml">
+  </include>
+
+  <!--Used for visualising the robot while building a map or navigating with the ros navistack.-->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find homebot)/config/rviz.rviz"/>
+
+  <!--run sound_play node that allow to make sound notification-->
+  <node name="playing_sound_node" pkg="sound_play" type="soundplay_node.py" output="screen"/>
+
+
+</launch>
+
